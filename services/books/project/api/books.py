@@ -6,9 +6,10 @@ from project import db
 
 books_blueprint = Blueprint('books', __name__)
 
+
 @books_blueprint.route('/books/ping', methods=['GET'])
 def ping_pong():
-  return jsonify({
-    'status': 'Success',
-    'message': 'pong'
-  })
+    return jsonify({
+        'status': 'Success',
+        'message': 'pong'
+    })
