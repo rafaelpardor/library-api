@@ -2,6 +2,7 @@ import unittest
 from flask.cli import FlaskGroup
 
 from project import create_app, db
+from project.api.models import Book
 
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
@@ -21,6 +22,18 @@ def run_tests():
     if result.wasSuccessful():
         return 0
     return 1
+
+
+@cli.command("seed_db")
+def seed_db():
+    import datetime
+    db.session.add(Book(title="Harry Potter 1", subtitle="el primero", author="J.K. Rowlink", category="Fantasy",
+                        publish_date=datetime.datetime.today().strftime('%Y-%m-%d'), description="Es el primer libro",
+                        created_at=datetime.datetime.now(), updated_at=datetime.datetime.now(), deleted_at=None))
+    db.session.add(Book(title="Harry Potter 2", subtitle="el segudno", author="J.K. Rowlink", category="Fantasy",
+                        publish_date=datetime.datetime.today().strftime('%Y-%m-%d'), description="Es el segundo libro",
+                        created_at=datetime.datetime.now(), updated_at=datetime.datetime.now(), deleted_at=None))
+    db.session.commit()
 
 
 if __name__ == "__main__":

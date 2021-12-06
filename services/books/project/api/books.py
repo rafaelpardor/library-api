@@ -13,3 +13,15 @@ def ping_pong():
         'status': 'Success',
         'message': 'pong'
     })
+
+
+@books_blueprint.route('/books/', methods=['GET'])
+def get_books():
+    if request.method == 'GET':
+        get_books = [book.to_json() for book in Book.query.all()]
+        response = {
+            "origin": "api_database",
+            "status": "success",
+            "data": get_books
+        }
+        return jsonify(response), 200

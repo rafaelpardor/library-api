@@ -2,6 +2,7 @@ version: '3'
 services:
   books_api:
     container_name: books_api
+    restart: always
     build:
       context: ./services/books
       dockerfile: Dockerfile
