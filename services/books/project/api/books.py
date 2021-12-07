@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy import exc
+from werkzeug.wrappers import response
 
 from project.api.models import Book
 from project import db
@@ -45,9 +46,9 @@ def get_book_by_id(book_id):
                 "origin": "api_database",
             }
             response_object['message'] = "Book not found"
-            response_object['status'] = 404
+            response_object['status'] = 401
             response_object['data'] = []
-            return jsonify(response_object), 404
+            return jsonify(response_object), 401
 
         response_object = {
             "origin": "api_database",
@@ -82,9 +83,9 @@ def get_book_by_parameter():
                 "origin": "api_database",
             }
             response_object['message'] = "Book not found"
-            response_object['status'] = 404
+            response_object['status'] = 401
             response_object['data'] = []
-            return jsonify(response_object), 404
+            return jsonify(response_object), 401
 
         response_object = {
             "origin": "api_database",
@@ -101,10 +102,49 @@ def get_book_by_parameter():
         return jsonify(response_object), 500
 
 
-@books_blueprint.route('/books/', methods=['POST'])
+@books_blueprint.route('/books', methods=['POST'])
 def create_book():
     if request.method == 'POST':
-        pass
+        post = request.get_json()
+        title = post.get('title')
+        author = post.get('author')
+        category = post.get('category')
+        publish_date = post.get('publish_date')
+
+        if post is None or title is None or author is None or category is None or publish_date is None:
+            print(post, title, author, category, publish_date)
+            response_object = {
+                "status": 400,
+                "message": "Fail to add book"
+            }
+            return jsonify(response_object), 400
+
+        try:
+            book = Book.query.filter_by(title=title).first()
+            if book:
+                response_object = {
+                    "status": 401,
+                    "origin": "api_database",
+                    "message": f"A book with the title, {title}, already exists."
+                }
+                return jsonify(response_object), 200
+            db.session.add(Book(title=title, author=author,
+                           category=category, publish_date=publish_date))
+            db.session.commit()
+            response_object = {
+                "status": 200,
+                "origin": "api_database",
+                "message": f"{title} was added."
+            }
+            return jsonify(response_object)
+        except exc.IntegrityError as error:
+            db.session.rollback()
+            response_object = {
+                "origin": "api_database",
+                "message": error,
+                "status": 500
+            }
+            return jsonify(response_object), 500
 
 
 @books_blueprint.route('/books/<id>', methods=['PUT'])
@@ -112,6 +152,6 @@ def update_book():
     pass
 
 
-@books_blueprint.route('/books/books', methods=['GET'])
+@books_blueprint.route('/books/<id>', methods=['DELETE'])
 def delete_book():
     pass

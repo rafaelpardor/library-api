@@ -28,11 +28,9 @@ def run_tests():
 def seed_db():
     import datetime
     db.session.add(Book(title="Harry Potter 1", subtitle="el primero", author="J.K. Rowlink", category="Fantasy",
-                        publish_date=datetime.datetime.today().strftime('%Y-%m-%d'), description="Es el primer libro",
-                        created_at=datetime.datetime.now(), updated_at=datetime.datetime.now(), deleted_at=None))
+                        publish_date=datetime.datetime.today().strftime('%Y-%m-%d'), description="Es el primer libro"))
     db.session.add(Book(title="Harry Potter 2", subtitle="el segudno", author="J.K. Rowlink", category="Fantasy",
-                        publish_date=datetime.datetime.today().strftime('%Y-%m-%d'), description="Es el segundo libro",
-                        created_at=datetime.datetime.now(), updated_at=datetime.datetime.now(), deleted_at=None))
+                        publish_date=datetime.datetime.today().strftime('%Y-%m-%d'), description="Es el segundo libro"))
     db.session.commit()
 
 

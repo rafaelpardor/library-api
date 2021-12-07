@@ -1,3 +1,5 @@
+import datetime
+
 from project import db
 
 
@@ -9,21 +11,16 @@ class Book(db.Model):
     author = db.Column(db.String(128), nullable=False)
     category = db.Column(db.String(128), nullable=False)
     publish_date = db.Column(db.Date, nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False)
-    updated_at = db.Column(db.DateTime, nullable=False)
-    deleted_at = db.Column(db.DateTime, nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now())
+    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now())
+    deleted_at = db.Column(db.DateTime, nullable=True, default=None)
 
-    def __init__(self, title, subtitle, author, category, publish_date, description, created_at, updated_at, deleted_at):
+    def __init__(self, title, author, category, publish_date):
         self.title = title
-        self.subtitle = subtitle
         self.author = author
         self.category = category
         self.publish_date = publish_date
-        self.description = description
-        self.created_at = created_at
-        self.updated_at = updated_at
-        self.deleted_at = deleted_at
 
     def to_json(self):
         return {
@@ -41,7 +38,9 @@ class Book(db.Model):
 
 
 # class Author(db.Model):
-#     pass
+#     __tablename__ = "author"
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     name = db.Column(db.String(128), nullable=False)
 
 
 # class Category(db.Model):
